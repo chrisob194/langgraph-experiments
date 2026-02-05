@@ -1,5 +1,35 @@
+from dotenv import load_dotenv
+from langchain_core.prompts import PromptTemplate
+from langchain_openai import ChatOpenAI
+
+load_dotenv()
+
+
 def main():
     print("Hello from langgraph-experiments!")
+
+    information = """
+    Alessandro Del Piero Ufficiale OMRI[3][4] (Italian pronunciation: [alesˈsandro del ˈpjɛːro]; born 9 November 1974) is an Italian former professional footballer who mainly played as a second striker, although he was capable of playing in several offensive positions.[5][6][7][8] Since 2015, he has worked as a pundit for Sky Sport Italia.[9] A technically gifted[10] and creative supporting forward[11][12] who was also a free-kick specialist,[13][14] Del Piero won the Serie A Italian Footballer of the Year award in 1998 and 2008 and received multiple nominations for the Ballon d'Or and FIFA World Player of the Year.
+    A prolific goal-scorer, he is currently the second highest all-time Italian top-scorer in all competitions, with 346 goals, behind only Silvio Piola, with 390 goals; he is also the joint ninth highest goalscorer in Serie A history, with 188 goals, alongside Giuseppe Signori and Alberto Gilardino.[15][16][17][18][19][20] After beginning his career with Italian club Padova in Serie B in 1991, he moved to Juventus in 1993, where he played for 19 seasons (11 as captain), and holds the club records for most goals (290) and appearances (705). During his time at the club, he won six Serie A titles, the Coppa Italia, four Supercoppa Italiana titles, the UEFA Champions League, the UEFA Super Cup, the UEFA Intertoto Cup, and the Intercontinental Cup. After leaving the club in 2012, he also spent two seasons with Australian side Sydney FC; he retired in 2014, after a season with Delhi Dynamos FC in the Indian Super League.
+    Del Piero has scored in every competition in which he has participated.[21] In 2004, he was named in the FIFA 100, a list of the 125 greatest living footballers selected by Pelé as a part of FIFA's centenary celebrations.[22] In the same year, he was also voted into the UEFA Golden Jubilee Poll, a list of the 50 best European players of the past 50 years.[23] Along with six awards in Italy for gentlemanly conduct,[24][25] he has also won the Golden Foot award, which pertains to personality as well as playing ability.
+    At international level, Del Piero has also represented the Italy national team at three FIFA World Cups and four UEFA European Football Championships, most notably winning the 2006 FIFA World Cup, and reaching the final of UEFA Euro 2000 with Italy. He is the joint fourth highest scorer for the Italy national team, with 27 goals, alongside Roberto Baggio, and behind only Silvio Piola with 30 goals, Giuseppe Meazza with 33 goals, and Luigi Riva with 35 goals; with 91 appearances for Italy between 1995 and 2008, he is also his nation's eleventh-most capped player of all-time. In his career Del Piero scored 462 goals.
+    """
+
+    summary_template = """
+    Given the information {information} about a person I want you to create:
+    1. A short summary
+    2. Two interesting facts about them
+    """
+
+    summary_prompt_template = PromptTemplate(
+        input_variables=["information"], template=summary_template
+    )
+
+    llm = ChatOpenAI(temperature=0, model="gpt-4o-mini")
+    chain = summary_prompt_template | llm
+
+    response = chain.invoke(input={"information": information})
+    print(response.content)
 
 
 if __name__ == "__main__":
